@@ -3,6 +3,7 @@ import { randomUUID } from 'crypto';
 import { ApiListResponseDto } from '../common/api-list-response.dto';
 import { CreateOrderDto, TicketResponseDto } from './dto/order.dto';
 import { FilmsRepository } from '../repository/films.repository';
+import { Film } from '../films/films.schema';
 
 function groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
   const map = new Map<string, T[]>();
@@ -31,10 +32,14 @@ export class OrderService {
       throw new BadRequestException('В заказе есть дублирующиеся места');
     }
 
+    const filmIds = [...new Set(tickets.map((t) => t.film))];
+    const films = await this.filmsRepository.findByIds(filmIds);
+    const filmMap = new Map<string, Film>(films.map((f) => [f.id, f]));
+
     const ticketsByFilm = groupBy(tickets, (t) => t.film);
 
     for (const [filmId, filmTickets] of ticketsByFilm) {
-      const film = await this.filmsRepository.findOne(filmId);
+      const film = filmMap.get(filmId);
       if (!film) {
         throw new BadRequestException(`Фильм ${filmId} не найден`);
       }

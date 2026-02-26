@@ -3,11 +3,11 @@ import { OrderService } from './order.service';
 import { ApiListResponseDto } from '../common/api-list-response.dto';
 import { CreateOrderDto, TicketResponseDto } from './dto/order.dto';
 
-@Controller()
+@Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
-  @Post('order')
+  @Post()
   create(
     @Body() createOrderDto: CreateOrderDto,
   ): Promise<ApiListResponseDto<TicketResponseDto>> {

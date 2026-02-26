@@ -19,7 +19,3 @@ export class ScheduleDto {
   price: number;
   taken: string[];
 }
-
-export interface FilmDocument extends FilmDto {
-  schedule: ScheduleDto[];
-}
