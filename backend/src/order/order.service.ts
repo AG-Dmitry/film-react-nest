@@ -2,8 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { ApiListResponseDto } from '../common/api-list-response.dto';
 import { CreateOrderDto, TicketResponseDto } from './dto/order.dto';
-import { FilmsRepository } from '../repository/films.repository';
-import { Film } from '../films/films.schema';
+import { FilmData, FilmsRepository } from '../repository/films.repository';
 
 function groupBy<T>(items: T[], keyFn: (item: T) => string): Map<string, T[]> {
   const map = new Map<string, T[]>();
@@ -34,7 +33,7 @@ export class OrderService {
 
     const filmIds = [...new Set(tickets.map((t) => t.film))];
     const films = await this.filmsRepository.findByIds(filmIds);
-    const filmMap = new Map<string, Film>(films.map((f) => [f.id, f]));
+    const filmMap = new Map<string, FilmData>(films.map((f) => [f.id, f]));
 
     const ticketsByFilm = groupBy(tickets, (t) => t.film);
 
